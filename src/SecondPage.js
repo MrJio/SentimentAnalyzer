@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 
@@ -7,6 +7,22 @@ const SecondPage = () => {
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("query");
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5001/api/news?query=${searchQuery}`);
+        const data = await response.json();
+        console.log("First 3 Article Titles:", data.results?.slice(0, 3).map(article => article.title));
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
+
+    if (searchQuery) {
+      fetchNews();
+    }
+  }, [searchQuery]);
 
   return (
     <div className="secondPageContainer">
