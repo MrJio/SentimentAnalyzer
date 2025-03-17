@@ -4,6 +4,8 @@ from flask_cors import CORS
 import requests
 import os
 from dotenv import load_dotenv
+from summary_model import summarize_articles
+from sentiment_model import analyze_sentiment
 
 app = Flask(__name__)
 CORS(app)
@@ -18,21 +20,28 @@ def get_news():
         return jsonify({"error": "Missing search query"}), 400
 
     url = (
-        f"https://newsdata.io/api/1/news?"
-        f"apikey={NEWS_API_KEY}"
-        f"&q={query}"
-        f"&language=en"
-        f"&country=us"
+        f"https://api.nytimes.com/svc/search/v2/articlesearch.json?"
+        f"q={query}"
+        f"&api-key={NEWS_API_KEY}"
     )
     response = requests.get(url)
 
     if response.status_code == 200:
         news_data = response.json()
-        articles = news_data.get('results', [])
-        if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' and request.environ.get('HTTP_USER_AGENT'):
-            for index, article in enumerate(articles[:3]):
-                print(f"Article {index + 1} Title: {article.get('title', 'No title available')}")
-        return jsonify(news_data)
+        articles = news_data.get('response', {}).get('docs', [])
+
+        if len(articles) < 3:
+            return jsonify({"error": "Not enough relevant articles found"}), 404
+
+        summary = summarize_articles(articles[:3])
+
+        sentiment_result = analyze_sentiment(summary)
+
+        return jsonify({
+            "query": query,
+            "summary": summary,
+            "sentiment": sentiment_result
+        })
     else:
         return jsonify({"error": "Failed to fetch news", "status_code": response.status_code}), 500
 
