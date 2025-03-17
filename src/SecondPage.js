@@ -43,7 +43,7 @@ const SecondPage = () => {
       {/* Search Query Box + Back Button */}
       <div className="searchHeader">
         <div className="searchBox2">{searchQuery}</div>
-        <button className="backButton" onClick={() => navigate("/")}>🔙 Back to Home</button>
+        <button className="backButton" onClick={() => navigate("/")}>←</button>
       </div>
 
       
