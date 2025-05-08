@@ -1,12 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import { useState, useEffect } from 'react';
-
 import SecondPage from "./SecondPage";
 import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
-
-
-
 
 const Home = () => {
   const titleText = "Sentiment Analyzer";
@@ -15,6 +10,7 @@ const Home = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [typedPlaceholder, setTypedPlaceholder] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +24,6 @@ const Home = () => {
         setTimeout(() => setShowSearch(true), 500);
       }
     }, 100);
-
     return () => clearInterval(titleInterval);
   }, []);
 
@@ -43,30 +38,82 @@ const Home = () => {
           clearInterval(placeholderInterval);
         }
       }, 50);
-
       return () => clearInterval(placeholderInterval);
     }
   }, [showSearch]);
 
+  useEffect(() => {
+    const stored = localStorage.getItem("recentSearches");
+    if (stored) setRecentSearches(JSON.parse(stored));
+  }, []);
+
+  const saveSearch = (query) => {
+    const updated = [query, ...recentSearches.filter((q) => q !== query)].slice(0, 15);
+    setRecentSearches(updated);
+    localStorage.setItem("recentSearches", JSON.stringify(updated));
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
-      navigate(`/results?query=${encodeURIComponent(searchQuery)}`);
+      saveSearch(searchQuery.trim());
+      navigate(`/results?query=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
+  const handleSearchClick = (query) => {
+    navigate(`/results?query=${encodeURIComponent(query)}`);
+  };
+
+  const clearSearches = () => {
+    setRecentSearches([]);
+    localStorage.removeItem("recentSearches");
+  };
+
+  const removeSearch = (index) => {
+    const updated = recentSearches.filter((_, i) => i !== index);
+    setRecentSearches(updated);
+    localStorage.setItem("recentSearches", JSON.stringify(updated));
+  };
+
   return (
-    <div className="container">
-      <h1 className="title">{typedTitle}</h1>
-      {showSearch && (
-        <input
-          type="text"
-          className="searchBox"
-          placeholder={typedPlaceholder}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-      )}
+    <div className="home-container">
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h2>Recent Searches</h2>
+        </div>
+
+        {recentSearches.length > 0 ? (
+          <>
+            <button className="clearBtn" onClick={clearSearches}>Clear</button>
+            <ul className="search-list">
+              {recentSearches.map((query, index) => (
+                <li key={index} className="search-item">
+                  <button className="recentQuery" onClick={() => handleSearchClick(query)}>
+                    {query}
+                  </button>
+                  <button className="removeBtn" onClick={() => removeSearch(index)}>x</button>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <div className="no-searches-msg">No recent searches</div>
+        )}
+      </div>
+
+      <div className="main-section">
+        <h1 className="title">{typedTitle}</h1>
+        {showSearch && (
+          <input
+            type="text"
+            className="searchBox"
+            placeholder={typedPlaceholder}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleKeyPress}
+          />
+        )}
+      </div>
     </div>
   );
 };
