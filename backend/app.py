@@ -43,16 +43,32 @@ def preprocess_articles(articles):
             })
     return processed
 
-def summarize_articles(articles):
+def summarize_articles(articles, query):
     if len(articles) < 3:
         return "Not enough articles to summarize."
 
-    combined_text = " ".join([a["content"] for a in articles[:5]])[:4000]
-    word_count = len(combined_text.split())
-    max_len = min(800, word_count)
-    min_len = max(300, max_len // 2)
+    # Filter relevant articles based on query
+    relevant_articles = [a for a in articles if query.lower() in a["title"].lower() or query.lower() in a["content"].lower()]
+    if not relevant_articles:
+        relevant_articles = articles  # fallback
 
-    summary = summarizer(combined_text, max_length=max_len, min_length=min_len, do_sample=False)
+    # Combine title and content
+    combined_text = " ".join([f"{a['title']}. {a['content']}" for a in relevant_articles[:5]])
+
+    # Limit to ~800 words max
+    if len(combined_text.split()) > 800:
+        combined_text = " ".join(combined_text.split()[:800])
+
+    # Prompt-style instruction for summarization
+    combined_text = f"Summarize the key news points about '{query}':\n\n{combined_text}"
+
+    summary = summarizer(
+        combined_text,
+        max_length=800,
+        min_length=300,
+        do_sample=False,
+        clean_up_tokenization_spaces=True
+    )
     return summary[0]["summary_text"]
 
 def analyze_sentiment(text):
@@ -97,7 +113,7 @@ def get_news():
     if not processed_articles:
         return jsonify({"error": "No valid articles for summarization"}), 404
 
-    summary = summarize_articles(processed_articles)
+    summary = summarize_articles(processed_articles, query)
     sentiment = analyze_sentiment(summary)
 
     return jsonify({

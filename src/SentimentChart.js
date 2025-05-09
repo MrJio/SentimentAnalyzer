@@ -53,6 +53,7 @@ const SentimentChart = ({ data, isLoading }) => {
       },
       y: {
         beginAtZero: true,
+        max: 100,
         ticks: { precision: 0 },
       },
     },

@@ -32,10 +32,9 @@ const SecondPage = () => {
   const positive = socialMediaData?.datasets?.[0]?.data?.[0] || 0;
   const negative = socialMediaData?.datasets?.[0]?.data?.[2] || 0;
   const redditSentimentValue = total ? (positive / total) * 100 : 50;
-  
+
   const sentimentDisplay = getSentimentDisplay(redditSentimentValue.toFixed(1));
   const gaugeValue = redditSentimentValue;
-  
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -72,7 +71,7 @@ const SecondPage = () => {
                   data.sentiments.neutral,
                   data.sentiments.negative
                 ],
-                backgroundColor: ["#73d13d", "#d9d9d9", "#ff4d4f"]
+                backgroundColor: ["#87EBA8", "#EEEEEE", "#F28268"]
               }
             ]
           });
@@ -98,14 +97,18 @@ const SecondPage = () => {
       <div className="contentContainer">
         <div className="summaryBox">
           <h2>Related News on Topic</h2>
-          <p className={summary === "Failed to load summary" ? "centered-summary-text" : ""}>
+          <p className={
+            summary === "Loading summary..."
+              ? "centered-summary-text"
+              : "left-aligned-summary-text"
+          }>
             {summary}
           </p>
         </div>
 
         <div className="rightSections">
           <div className="socialMediaBox">
-            <h2>Reddit Post<br/>(100 post)</h2>
+            <h2>Reddit Post<br />(100 post)</h2>
             <SentimentChart data={socialMediaData || { datasets: [{ data: [0, 0, 0] }] }} />
           </div>
 

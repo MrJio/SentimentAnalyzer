@@ -65,6 +65,21 @@ body {
   margin-bottom: 1rem;
 }
 
+.centered-summary-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 80%;
+  font-weight: bold;
+}
+
+.left-aligned-summary-text {
+  text-align: left;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
 .sidebar-header h2 {
   font-size: 1.2rem;
   margin: 0;
@@ -303,6 +318,7 @@ min-width: 90%;
 
 .socialMediaBox {
 max-width: 350px; 
+max-height: 35vh;
 display: flex;
 flex-direction: column;
 justify-content: center;
@@ -315,7 +331,7 @@ overflow: hidden;
 display: flex;
 align-items: center;
 justify-content: center;
-min-height: 25vh;
+max-height: 25vh;
 width: 97%;
 padding: 1rem;
 border-radius: 30px;
@@ -378,7 +394,7 @@ color: #666;
   width: 100%;
   max-width: 220px;
   height: 130px;
-  margin-top: 10px;
+  margin: 10px auto;
 }
 
 .sentimentEmoji {

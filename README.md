@@ -1,70 +1,126 @@
-# Getting Started with Create React App
+# 🧠 Sentiment Analyzer Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a full-stack AI-powered web application that summarizes and analyzes the sentiment of **news articles** and **Reddit posts** based on any user-provided topic.
 
-## Available Scripts
+The app features:
+- Live **summaries** of recent news articles using AI (BART transformer model)
+- **Sentiment meter** (with emojis) showing public opinion from Reddit posts
+- A **bar chart** summarizing positive, neutral, and negative Reddit posts
+- **Saved searches** sidebar for easy re-analysis
+- A clean, responsive, interactive frontend
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📁 Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+sentiment-analyzer/
+├── backend/                # Flask + AI backend
+│   ├── app.py              # Handles news summaries and news sentiment
+│   ├── reddit_api.py       # Collects Reddit posts and performs sentiment classification
+│   ├── .env                # Stores your API keys (you will create this)
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # React frontend
+│   └── (React code here)
+└── README.md               # You are here!
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🛠️ Backend Setup Guide (Python + Flask)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Navigate to the backend folder
 
-### `npm run build`
+```bash
+cd backend
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Create a virtual environment
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # Use .venv\Scripts\activate on Windows
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 3. Install all dependencies
 
-### `npm run eject`
+```bash
+pip install -r requirements.txt
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 4. Add a `.env` file
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+In the `backend/` folder, create a file named `.env` with the following:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+NEWS_API_KEY=your_newsapi_key_here
+REDDIT_CLIENT_ID=your_reddit_client_id_here
+REDDIT_CLIENT_SECRET=your_reddit_secret_here
+REDDIT_USER_AGENT=your_unique_user_agent
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+> 💡 Need a NewsAPI key? Sign up at https://newsapi.org  
+> 💡 Need Reddit keys? Go to https://www.reddit.com/prefs/apps and create a script application.
 
-## Learn More
+### 5. Run the servers
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You’ll need **two terminal tabs**:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- First tab (for news summary):
 
-### Code Splitting
+```bash
+python app.py
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Second tab (for Reddit sentiment):
 
-### Analyzing the Bundle Size
+```bash
+python reddit_api.py
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Both will say something like `Running on http://127.0.0.1:5001` or `:5002`.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🌐 Frontend Setup (React)
 
-### Advanced Configuration
+### 1. Navigate to the frontend folder
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+cd frontend
+```
 
-### Deployment
+### 2. Install frontend dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+yarn install
+```
 
-### `npm run build` fails to minify
+### 3. Run the frontend app
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+yarn start
+```
+
+This will launch the app at:  
+👉 http://localhost:3000
+
+---
+
+## ✅ Tools You Need Installed
+
+| Tool        | Installation Guide                            |
+|-------------|-----------------------------------------------|
+| Python 3.8+ | https://www.python.org                        |
+| Node.js     | https://nodejs.org (LTS version recommended)  |
+| Yarn        | `npm install -g yarn`                         |
+
+---
+
+## 🤔 What If I Get Stuck?
+
+- Make sure your API keys are valid and saved in `.env`
+- Use `console.log()` in frontend or `print()` in backend for debugging
+- Check your terminal for error messages and port conflicts
+
+Happy building! 🚀
